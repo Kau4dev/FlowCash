@@ -5,19 +5,22 @@ services:
     image: postgres:17
     container_name: flowcash-db
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: flowcash  # Banco padrão
+      # Definindo usuário e senha EXPLICITAMENTE
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      # O nome do banco default (opcional, mas bom ter)
+      - POSTGRES_DB=flowcash
+      # Variável que seu script .sh precisa para criar o ms_user
+      - POSTGRES_MULTIPLE_DATABASES=ms_user,ms_wallet,ms_transfer
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
-      - ./init-sql/create-databases.sh:/docker-entrypoint-initdb.d/create-databases.sh
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d flowcash"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      # Esta linha pega seu script e coloca na pasta mágica do Postgres
+      # O Postgres executa tudo que estiver aí dentro quando inicia vazio
+      - ./init-sql:/docker-entrypoint-initdb.d
+    networks:
+      - flowcash-network
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -26,5 +29,11 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: 123
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=123
+    networks:
+      - flowcash-network
+
+networks:
+  flowcash-network:
+    driver: bridge
