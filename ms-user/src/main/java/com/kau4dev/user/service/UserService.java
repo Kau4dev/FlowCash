@@ -22,11 +22,13 @@ public class UserService {
     public UserDTO createUser(UserDTO userDTO) {
         validateCpfOrCnpj(userDTO.cpf(), userDTO.cnpj());
 
-        if(userRepository.existsByCpfOrCnpj(userDTO.cnpj(), userDTO.cpf())){
-            throw new IllegalArgumentException("User already exists");
+        String cpfCnpj = userDTO.cpf() != null ? userDTO.cpf().replaceAll("\\D", "") : userDTO.cnpj().replaceAll("\\D", "");
+
+        if(userRepository.existsByCpfCnpj(cpfCnpj)){
+            throw new IllegalArgumentException("CPF/CNPJ already registered");
         }
-        if(userRepository.existsEmail(userDTO.email())){
-            throw new IllegalArgumentException("Email already exists");
+        if(userRepository.existsByEmail(userDTO.email())){
+            throw new IllegalArgumentException("Email already registered");
         }
 
         User createdUser = userMapper.toEntity(userDTO);

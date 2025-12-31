@@ -11,7 +11,6 @@ public interface UserMapper {
 
     @Mapping(target = "cpfCnpj", expression = "java(selectCpfOrCnpj(dto))")
     @Mapping(target = "type", expression = "java(parseUserType(dto.type()))")
-    @Mapping(target = "password", ignore = true)
     User toEntity(UserDTO dto);
 
     @Mapping(target = "cpf", expression = "java(isCpf(user.getCpfCnpj()) ? user.getCpfCnpj() : null)")

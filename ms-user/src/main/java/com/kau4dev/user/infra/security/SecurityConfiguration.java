@@ -14,12 +14,10 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) // Desabilita proteção contra ataques CSRF (necessário para APIs REST)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // API REST não guarda estado/sessão
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/users").permitAll() // Libera o cadastro de usuários
-                        .requestMatchers("/h2-console/**").permitAll() // Caso use H2 (opcional)
-                        .anyRequest().authenticated() // O resto precisa de autenticação (mas por enquanto só temos /users)
+                        .anyRequest().permitAll()
                 )
                 .build();
     }
