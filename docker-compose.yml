@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:17
+    container_name: flowcash-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: flowcash  # Banco padrão
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./init-sql/create-databases.sh:/docker-entrypoint-initdb.d/create-databases.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d flowcash"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: flowcash-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: 123
