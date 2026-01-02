@@ -1,5 +1,6 @@
 package com.kau4dev.user.service;
 
+import com.kau4dev.user.infra.exception.*;
 import com.kau4dev.user.model.dto.UserDTO;
 import com.kau4dev.user.model.entity.User;
 import com.kau4dev.user.model.mapper.UserMapper;
@@ -25,10 +26,10 @@ public class UserService {
         String cpfCnpj = userDTO.cpf() != null ? userDTO.cpf().replaceAll("\\D", "") : userDTO.cnpj().replaceAll("\\D", "");
 
         if(userRepository.existsByCpfCnpj(cpfCnpj)){
-            throw new IllegalArgumentException("CPF/CNPJ already registered");
+            throw new CpfCnpjAlreadyExistsException("CPF/CNPJ already registered");
         }
         if(userRepository.existsByEmail(userDTO.email())){
-            throw new IllegalArgumentException("Email already registered");
+            throw new EmailAlreadyExistsException("Email already registered");
         }
 
         User createdUser = userMapper.toEntity(userDTO);
@@ -45,17 +46,17 @@ public class UserService {
 
     public UserDTO getUserById(UUID id){
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         return userMapper.toDTO(user);
     }
 
 
     private void validateCpfOrCnpj(String cpf, String cnpj) {
         if ((cpf == null || cpf.isBlank()) && (cnpj == null || cnpj.isBlank())) {
-            throw new IllegalArgumentException("CPF or CNPJ is required");
+            throw new CpfCnpjRequiredException("CPF or CNPJ is required");
         }
         if (cpf != null && !cpf.isBlank() && cnpj != null && !cnpj.isBlank()) {
-            throw new IllegalArgumentException("Provide either CPF or CNPJ, not both");
+            throw new CpfCnpjMutuallyExclusiveException("Provide either CPF or CNPJ, not both");
         }
     }
 
