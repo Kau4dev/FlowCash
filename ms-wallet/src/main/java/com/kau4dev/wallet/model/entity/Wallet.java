@@ -26,8 +26,8 @@ public class Wallet {
     @Column(nullable = false)
     private Long version = 0L;
 
-    @Column(name = "id_user", nullable = false)
-    private UUID idUser;
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
 
     public void deposit(BigDecimal amount) {
         this.balance = this.balance.add(amount);

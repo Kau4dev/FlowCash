@@ -25,7 +25,7 @@ public class WalletService {
     @Transactional
     public CreateWalletDTO createWallet (CreateWalletDTO createWalletDTO){
         Wallet wallet = Wallet.builder()
-                .idUser(createWalletDTO.userId())
+                .userId(createWalletDTO.userId())
                 .balance(createWalletDTO.balance() != null ? createWalletDTO.balance() : BigDecimal.ZERO)
                 .build();
 
