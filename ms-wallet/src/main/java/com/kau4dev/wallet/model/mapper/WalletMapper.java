@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface WalletMapper {
 
+    @Mapping(source = "idUser", target = "userId")
     WalletDTO toDTO(Wallet wallet);
 
     @Mapping(target = "userId", source = "idUser")

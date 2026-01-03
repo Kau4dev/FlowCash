@@ -51,7 +51,7 @@ public class WalletService {
     }
 
     private Wallet findWalletByUserId(UUID userId) {
-        return walletRepository.findByUserId(userId)
+        return walletRepository.findByIdUser(userId)
                 .orElseThrow(() -> new WalletNotFoundException("Wallet not found for user ID: " + userId));
     }
 
