@@ -15,6 +15,6 @@ public record WalletDTO (
         Long version,
 
         @NotNull(message = "Id User is required")
-        UUID idUser
+        UUID userId
 ) {
 }

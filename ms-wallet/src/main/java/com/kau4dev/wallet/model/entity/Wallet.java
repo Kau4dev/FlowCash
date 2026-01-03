@@ -29,5 +29,9 @@ public class Wallet {
     @Column(name = "id_user", nullable = false)
     private UUID idUser;
 
+    public void deposit(BigDecimal amount) {
+        this.balance = this.balance.add(amount);
+    }
+
 
 }
