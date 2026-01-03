@@ -5,7 +5,7 @@ import com.kau4dev.user.model.dto.UserDTO;
 import com.kau4dev.user.model.entity.User;
 import com.kau4dev.user.model.mapper.UserMapper;
 import com.kau4dev.user.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
@@ -21,42 +21,67 @@ public class UserService {
 
     @Transactional
     public UserDTO createUser(UserDTO userDTO) {
-        validateCpfOrCnpj(userDTO.cpf(), userDTO.cnpj());
 
-        String cpfCnpj = userDTO.cpf() != null ? userDTO.cpf().replaceAll("\\D", "") : userDTO.cnpj().replaceAll("\\D", "");
-
-        if(userRepository.existsByCpfCnpj(cpfCnpj)){
-            throw new CpfCnpjAlreadyExistsException("CPF/CNPJ already registered");
-        }
-        if(userRepository.existsByEmail(userDTO.email())){
-            throw new EmailAlreadyExistsException("Email already registered");
-        }
+        validateUserData(userDTO);
+        String cpfCnpj = extractAndCleanCpfCnpj(userDTO);
+        checkDuplicates(cpfCnpj, userDTO.email());
 
         User createdUser = userMapper.toEntity(userDTO);
-        User SavedUser = userRepository.save(createdUser);
-        return userMapper.toDTO(SavedUser);
+        User savedUser = userRepository.save(createdUser);
+        return userMapper.toDTO(savedUser);
     }
 
+    @Transactional(readOnly = true)
     public List<UserDTO> getAllUsers(){
-        List<User> users = userRepository.findAll();
-        return users.stream()
+        return userRepository.findAll()
+                .stream()
                 .map(userMapper::toDTO)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public UserDTO getUserById(UUID id){
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
         return userMapper.toDTO(user);
     }
 
 
+
+    private void validateUserData(UserDTO userDTO) {
+        validateCpfOrCnpj(userDTO.cpf(), userDTO.cnpj());
+        validateEmail(userDTO.email());
+    }
+
     private void validateCpfOrCnpj(String cpf, String cnpj) {
-        if ((cpf == null || cpf.isBlank()) && (cnpj == null || cnpj.isBlank())) {
+        boolean hasCpf = cpf != null && !cpf.isBlank();
+        boolean hasCnpj = cnpj != null && !cnpj.isBlank();
+
+        if (!hasCpf && !hasCnpj) {
             throw new CpfCnpjRequiredException("CPF or CNPJ is required");
         }
-        if (cpf != null && !cpf.isBlank() && cnpj != null && !cnpj.isBlank()) {
+        if (hasCpf && hasCnpj) {
             throw new CpfCnpjMutuallyExclusiveException("Provide either CPF or CNPJ, not both");
+        }
+    }
+
+    private void validateEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+    }
+
+    private String extractAndCleanCpfCnpj(UserDTO userDTO) {
+        String document = userDTO.cpf() != null ? userDTO.cpf() : userDTO.cnpj();
+        return document.replaceAll("\\D", "");
+    }
+
+    private void checkDuplicates(String cpfCnpj, String email) {
+        if (userRepository.existsByCpfCnpj(cpfCnpj)) {
+            throw new CpfCnpjAlreadyExistsException("CPF/CNPJ already registered");
+        }
+        if (userRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException("Email already registered");
         }
     }
 
