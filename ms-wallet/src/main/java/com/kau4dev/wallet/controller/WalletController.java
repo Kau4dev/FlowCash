@@ -1,6 +1,8 @@
 package com.kau4dev.wallet.controller;
 
 import com.kau4dev.wallet.model.dto.CreateWalletDTO;
+import com.kau4dev.wallet.model.dto.DepositDTO;
+import com.kau4dev.wallet.model.dto.WalletDTO;
 import com.kau4dev.wallet.model.entity.Wallet;
 import com.kau4dev.wallet.repository.WalletRepository;
 import com.kau4dev.wallet.service.WalletService;
@@ -21,16 +23,18 @@ public class WalletController {
 
     @PostMapping
     public ResponseEntity<CreateWalletDTO> createWallet(@RequestBody @Valid CreateWalletDTO createWalletDTO) {
-        CreateWalletDTO createdWallet  = walletService.createWallet;
-
+        CreateWalletDTO createdWallet  = walletService.createWallet(createWalletDTO);
+        return ResponseEntity.status(201).body(createdWallet);
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<BigDecimal> getBalance(@PathVariable UUID userId) {
-
+        BigDecimal balance = walletService.getBalance(userId);
+        return ResponseEntity.status(200).body(balance);
     }
     @PostMapping("/deposit")
     public ResponseEntity<WalletDTO> deposit(@RequestBody DepositDTO depositDTO) {
-
+        WalletDTO updatedWallet = walletService.deposit(depositDTO);
+        return ResponseEntity.status(200).body(updatedWallet);
     }
 }
