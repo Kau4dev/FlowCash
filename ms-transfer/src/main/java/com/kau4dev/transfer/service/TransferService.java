@@ -28,6 +28,7 @@ public class TransferService {
     private final UserFeignClient userClient;
     private final TransferRepository transferRepository;
     private final NotificationProducer notificationProducer;
+    private final WalletService walletService;
 
     @Transactional
     public Transfer executeTransfer(TransferDTO transferDTO) {
@@ -43,6 +44,8 @@ public class TransferService {
         if (!authResponse.isAuthorized()) {
             throw new TransferNotAuthorizedException("Transfer not authorized by external service");
         }
+
+        walletService.processTransfer(transferDTO.payerId(), transferDTO.payeeId(), transferDTO.amount());
 
         Transfer transfer = Transfer.builder()
                 .payerId(transferDTO.payerId())
