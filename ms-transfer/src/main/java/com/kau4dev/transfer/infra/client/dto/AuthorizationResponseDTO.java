@@ -8,7 +8,7 @@ public record AuthorizationResponseDTO(
         DataDTO data
 ) {
     public boolean isAuthorized() {
-        return "success".equalsIgnoreCase(status) &&
+        return "APPROVED".equalsIgnoreCase(status) &&
                 data != null &&
                 Boolean.TRUE.equals(data.authorization());
     }

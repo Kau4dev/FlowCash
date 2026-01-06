@@ -24,7 +24,6 @@ public class NotificationConsumer {
             log.info("Notification sent successfully");
         } catch (Exception e) {
             log.error("Failed to send notification: {}", e.getMessage(), e);
-            // Aqui você pode implementar retry ou DLQ (Dead Letter Queue)
         }
     }
 }

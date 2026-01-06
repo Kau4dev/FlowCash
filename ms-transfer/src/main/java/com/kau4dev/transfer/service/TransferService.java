@@ -2,6 +2,7 @@ package com.kau4dev.transfer.service;
 
 import com.kau4dev.transfer.infra.client.AuthorizationFeignClient;
 import com.kau4dev.transfer.infra.client.UserFeignClient;
+import com.kau4dev.transfer.infra.client.dto.AuthorizationResponseDTO;
 import com.kau4dev.transfer.infra.client.dto.UserDTO;
 import com.kau4dev.transfer.infra.exception.MerchantCannotTransferException;
 import com.kau4dev.transfer.infra.exception.TransferNotAuthorizedException;
@@ -25,7 +26,7 @@ public class TransferService {
 
     private final AuthorizationFeignClient authClient;
     private final UserFeignClient userClient;
-    private final TransferRepository repository;
+    private final TransferRepository transferRepository;
     private final NotificationProducer notificationProducer;
 
     @Transactional
@@ -38,7 +39,7 @@ public class TransferService {
 
         userClient.getUserById(transferDTO.payeeId());
 
-        var authResponse = authClient.authorize();
+        AuthorizationResponseDTO authResponse = authClient.authorize();
         if (!authResponse.isAuthorized()) {
             throw new TransferNotAuthorizedException("Transfer not authorized by external service");
         }
@@ -47,11 +48,11 @@ public class TransferService {
                 .payerId(transferDTO.payerId())
                 .payeeId(transferDTO.payeeId())
                 .amount(transferDTO.amount())
-                .status(Status.PENDING)
+                .status(Status.APPROVED)
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        Transfer savedTransfer = repository.save(transfer);
+        Transfer savedTransfer = transferRepository.save(transfer);
 
         notificationProducer.sendNotification(transferDTO);
 
@@ -59,7 +60,8 @@ public class TransferService {
     }
 
     public Transfer getAllTransferById(UUID transferId) {
-        return repository.findById(transferId)
+        return transferRepository.findById(transferId)
                 .orElseThrow(() -> new UserNotFoundException("Transfer not found with ID: " + transferId));
     }
+
 }
