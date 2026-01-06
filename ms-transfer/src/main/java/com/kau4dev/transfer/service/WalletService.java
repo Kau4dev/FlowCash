@@ -23,7 +23,21 @@ public class WalletService {
             throw new InsufficientFundsException("Insufficient funds");
         }
 
-        walletClient.updateWallet(payerId, new WalletDTO(payerId, payerWallet.balance().subtract(amount)));
-        walletClient.updateWallet(payeeId, new WalletDTO(payeeId, payeeWallet.balance().add(amount)));
+        WalletDTO updatedPayerWallet = new WalletDTO(
+                payerWallet.id(),
+                payerWallet.balance().subtract(amount),
+                payerWallet.version(),
+                payerWallet.userId()
+        );
+
+        WalletDTO updatedPayeeWallet = new WalletDTO(
+                payeeWallet.id(),
+                payeeWallet.balance().add(amount),
+                payeeWallet.version(),
+                payeeWallet.userId()
+        );
+
+        walletClient.updateWallet(payerId, updatedPayerWallet);
+        walletClient.updateWallet(payeeId, updatedPayeeWallet);
     }
 }

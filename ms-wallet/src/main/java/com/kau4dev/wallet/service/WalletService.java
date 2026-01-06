@@ -37,15 +37,29 @@ public class WalletService {
         Wallet wallet = findWalletByUserId(userId);
         return wallet.getBalance();
     }
-    
+
+    public WalletDTO getWalletByUserId(UUID userId) {
+        Wallet wallet = findWalletByUserId(userId);
+        return walletMapper.toDTO(wallet);
+    }
+
     @Transactional
     public WalletDTO deposit(DepositDTO depositDTO) {
+
         validateDepositValue(depositDTO.value());
-
-
 
         Wallet wallet = findWalletByUserId(depositDTO.userId());
         wallet.deposit(depositDTO.value());
+        Wallet updatedWallet = walletRepository.save(wallet);
+        return walletMapper.toDTO(updatedWallet);
+    }
+
+    @Transactional
+    public WalletDTO updateBalance(UUID userId, BigDecimal newBalance) {
+
+        Wallet wallet = findWalletByUserId(userId);
+
+        wallet.setBalance(newBalance);
         Wallet updatedWallet = walletRepository.save(wallet);
         return walletMapper.toDTO(updatedWallet);
     }

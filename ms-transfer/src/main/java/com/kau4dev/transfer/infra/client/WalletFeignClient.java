@@ -9,9 +9,9 @@ import java.util.UUID;
 @FeignClient(name = "ms-wallet", url = "${ms-wallet.url}")
 public interface WalletFeignClient {
 
-    @GetMapping("/wallets/{userId}")
+    @GetMapping("api/wallets/{userId}")
     WalletDTO getWalletByUserId(@PathVariable("userId") UUID userId);
 
-    @PutMapping("/wallets/{userId}")
+    @PutMapping("api/wallets/{userId}")
     WalletDTO updateWallet(@PathVariable("userId") UUID userId, @RequestBody WalletDTO walletDTO);
 }

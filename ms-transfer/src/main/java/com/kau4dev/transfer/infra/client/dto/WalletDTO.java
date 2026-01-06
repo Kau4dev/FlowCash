@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record WalletDTO(
-        UUID userId,
-        BigDecimal balance) {
+        UUID id,
+        BigDecimal balance,
+        Long version,
+        UUID userId) {
 }
