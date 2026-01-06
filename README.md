@@ -680,8 +680,6 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 💼 **LinkedIn**: [Conecte-se comigo](https://linkedin.com/in/kaua-victor)
 
-🌐 **Portfólio**: [seu-portfolio.com](https://seu-portfolio.com)
-
 ---
 
 **Desenvolvido com ☕ e ❤️ usando Spring Boot**
