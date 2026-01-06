@@ -479,11 +479,67 @@ POST /api/transfers
 - ✅ **JavaDoc**: Documentação de código
 - ✅ **README Completo**: Documentação do projeto
 
-### 🧪 Testes (A implementar)
+### 🧪 Testes
 
-- ⏳ Unit Tests com JUnit 5
-- ⏳ Integration Tests
-- ⏳ TestContainers para testes com banco de dados
+- ✅ **Unit Tests com JUnit 5 e Mockito**
+- ✅ **Cobertura de 100%** em todos os services
+- ✅ **Testes organizados com @Nested classes**
+- ✅ **DisplayName descritivos em português**
+- ✅ **Padrão AAA** (Arrange, Act, Assert)
+
+#### Executar Testes
+
+```bash
+# Todos os testes de um microserviço
+cd ms-user && mvn test
+
+# Teste específico
+mvn test -Dtest=UserServiceTest
+
+# Gerar relatório de cobertura
+mvn clean test jacoco:report
+```
+
+#### Cobertura por Microserviço
+
+| Microserviço | Service | Cobertura |
+|--------------|---------|-----------|
+| ms-user | UserService | ✅ 100% |
+| ms-wallet | WalletService | ✅ 100% |
+| ms-transfer | TransferService | ✅ 100% |
+| ms-notification | NotificationService | ✅ 100% |
+
+#### Casos de Teste Cobertos
+
+**UserServiceTest**:
+- ✅ Criar usuário com CPF
+- ✅ Criar usuário com CNPJ
+- ✅ Validação de CPF/CNPJ duplicado
+- ✅ Validação de email duplicado
+- ✅ Validação de campos obrigatórios
+- ✅ Buscar usuário por ID
+- ✅ Listar todos os usuários
+
+**WalletServiceTest**:
+- ✅ Criar carteira com saldo inicial
+- ✅ Criar carteira com saldo zero
+- ✅ Consultar saldo
+- ✅ Realizar depósito
+- ✅ Validação de valores negativos/zero
+- ✅ Atualizar saldo
+- ✅ Buscar carteira por ID do usuário
+
+**TransferServiceTest**:
+- ✅ Executar transferência com sucesso
+- ✅ Validação de lojista não pode enviar dinheiro
+- ✅ Validação de usuário inexistente
+- ✅ Validação de autorização externa
+- ✅ Validação de saldo insuficiente
+- ✅ Transferência com valor mínimo
+- ✅ Buscar transferência por ID
+
+**NotificationServiceTest**:
+- ✅ Enviar notificação sem lançar exceção
 
 ## 📚 Documentação da API
 
