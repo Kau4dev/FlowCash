@@ -10,6 +10,6 @@ import java.util.UUID;
 @FeignClient(name = "ms-user", url = "${ms-user.url:http://localhost:8081}")
 public interface UserFeignClient {
 
-    @GetMapping("/users/{id}")
+    @GetMapping("api/users/{id}")
     UserDTO getUserById(@PathVariable("id") UUID id);
 }
