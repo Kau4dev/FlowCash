@@ -678,7 +678,7 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 📧 **Dúvidas ou sugestões?** Abra uma issue!
 
-💼 **LinkedIn**: [Conecte-se comigo](https://linkedin.com/in/seu-perfil)
+💼 **LinkedIn**: [Conecte-se comigo](https://linkedin.com/in/kaua-victor)
 
 🌐 **Portfólio**: [seu-portfolio.com](https://seu-portfolio.com)
 
